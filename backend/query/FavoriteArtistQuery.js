@@ -8,8 +8,8 @@ export const FAVORITE_ARTIST_QUERY = {
     GET_BY_ID: `
       SELECT * FROM favorite_artist WHERE id = $1`,
     GET_ALL_ARTISTS_BY_USER_ID: `
-      SELECT a.* FROM favorite_artist fs
-      JOIN artist a ON fs.artist_id = a.id
+      SELECT u.* FROM favorite_artist fs
+      JOIN users u ON fs.artist_id = u.id
       WHERE fs.user_id = $1
       ORDER BY fs.created_at DESC`,
     GET_ARTIST_BY_ID_AND_USER_ID: `
