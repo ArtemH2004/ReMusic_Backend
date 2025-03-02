@@ -6,7 +6,6 @@ class UploadPhoto {
         throw new Error("Invalid file data");
     }
     try {
-        console.log("Received file:", file);
         const filename = Date.now() + path.extname(file.name);
         const filePath = path.resolve("uploads", filename);
         await file.mv(filePath);
