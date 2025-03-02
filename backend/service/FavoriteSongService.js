@@ -1,5 +1,4 @@
 import { FAVORITE_SONG_QUERY } from "../query/FavoriteSongQuery.js";
-import uploadPhoto from "../uploadPhoto.js";
 import db from "../db.js";
 
 class FavoriteSongService {
@@ -7,7 +6,7 @@ class FavoriteSongService {
     const { user_id, song_id } = ids;
 
     if (!user_id || !song_id) {
-      throw new Error("User_id and Song_id are required");
+      throw new Error("User ID and Song ID are required");
     }
 
     try {
