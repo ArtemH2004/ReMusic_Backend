@@ -20,5 +20,10 @@ export const SONG_QUERY = {
     JOIN users u ON s.artist_id = u.id
     WHERE s.album_id = $1
     ORDER BY s.created_at`,
+  UPDATE_RATING_BY_ID: `
+    UPDATE song
+    SET rating = $1
+    WHERE id = $2
+    RETURNING *`,
   DELETE: `DELETE FROM song WHERE id = $1`,
 };

@@ -23,7 +23,7 @@ class SongService {
         uploadedPhoto,
         artist_id,
         songname,
-        album_id
+        album_id,
       ]);
 
       return createdSong;
@@ -60,10 +60,28 @@ class SongService {
     }
 
     try {
-      const songs = await db.query(SONG_QUERY.GET_ALL_SONGS_BY_ALBUM_ID, [albumId]);
+      const songs = await db.query(SONG_QUERY.GET_ALL_SONGS_BY_ALBUM_ID, [
+        albumId,
+      ]);
       return songs;
     } catch (error) {
       throw new Error(`Error getting songs by album ID: ${error.message}`);
+    }
+  }
+
+  async updateRatingById(rating, id) {
+    if (!rating || !id) {
+      throw new Error("Rating and Song ID fields are required.");
+    }
+
+    try {
+      const updatedSong = await db.query(SONG_QUERY.UPDATE_RATING_BY_ID, [
+        rating,
+        id,
+      ]);
+      return updatedSong;
+    } catch (error) {
+      throw new Error(`Error updating song rating: ${error.message}`);
     }
   }
 
