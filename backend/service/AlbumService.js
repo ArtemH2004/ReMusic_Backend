@@ -52,6 +52,22 @@ class AlbumService {
     }
   }
 
+  async updateRatingById(rating, id) {
+    if (!rating || !id) {
+      throw new Error("Rating and Album ID fields are required.");
+    }
+
+    try {
+      const updatedAlbum = await db.query(ALBUM_QUERY.UPDATE_RATING_BY_ID, [
+        rating,
+        id,
+      ]);
+      return updatedAlbum;
+    } catch (error) {
+      throw new Error(`Error updating album rating: ${error.message}`);
+    }
+  }
+
   async delete(id) {
     if (!id) {
       throw new Error("Album ID is required.");
