@@ -1,4 +1,5 @@
 import AlbumService from "../service/AlbumService.js";
+import SongService from "../service/SongService.js";
 
 class AlbumController {
   async create(req, res) {
@@ -29,7 +30,14 @@ class AlbumController {
         return res.status(404).json({ error: "Album not found" });
       }
 
-      res.status(200).json(album.rows[0]);
+      const songs = await SongService.getAllSongsByAlbumId(id);
+
+      const response = {
+        album: album.rows[0],
+        songs: songs.rows,
+      };
+
+      res.status(200).json(response);
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
