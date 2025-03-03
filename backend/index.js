@@ -10,6 +10,7 @@ import authRouter from './routes/AuthRoutes.js';
 import favoriteSongRouter from './routes/FavoriteSongRoutes.js';
 import favoriteAlbumRouter from './routes/FavoriteAlbumRoutes.js';
 import favoriteArtistRouter from './routes/FavoriteArtistRoutes.js';
+import favoriteReviewRouter from './routes/FavoriteReviewRoutes.js';
 
 const PORT = 8081;
 const app = express()
@@ -39,6 +40,7 @@ app.use('/api', authRouter)
 app.use('/api', favoriteSongRouter)
 app.use('/api', favoriteAlbumRouter)
 app.use('/api', favoriteArtistRouter)
+app.use('/api', favoriteReviewRouter)
 
 async function startApp () {
     try {
