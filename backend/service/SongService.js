@@ -69,6 +69,21 @@ class SongService {
     }
   }
 
+  async getAllSongsByArtistId(artistId) {
+    if (!artistId) {
+      throw new Error("Artist ID is required.");
+    }
+
+    try {
+      const songs = await db.query(SONG_QUERY.GET_ALL_SONGS_BY_ARTIST_ID, [
+        artistId,
+      ]);
+      return songs;
+    } catch (error) {
+      throw new Error(`Error getting songs by Artist ID: ${error.message}`);
+    }
+  }
+
   async updateRatingById(rating, id) {
     if (!rating || !id) {
       throw new Error("Rating and Song ID fields are required.");

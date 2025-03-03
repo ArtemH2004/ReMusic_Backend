@@ -1,6 +1,7 @@
 import AlbumService from "../service/AlbumService.js";
 import ReviewService from "../service/ReviewService.js";
 import SongService from "../service/SongService.js";
+import UserService from "../service/UserService.js";
 
 class ReviewController {
   async create(req, res) {
@@ -48,8 +49,10 @@ class ReviewController {
         }
 
         const newRating = Math.round(totalRating / reviews.rows.length);
-        //TODO uncomment
-        // await ArtistService.updateRatingById(newRating, newReview.rows[0].artist_id);
+        await UserService.updateRatingById(
+          newRating,
+          newReview.rows[0].artist_id
+        );
       }
 
       res.status(201).json(newReview);
@@ -85,8 +88,10 @@ class ReviewController {
         } else if (review.album_id) {
           const album = await AlbumService.getById(review.album_id);
           return { review, album: album.rows[0] };
+        } else if (review.artist_id) {
+          const artist = await UserService.getById(review.artist_id);
+          return { review, artist: artist.rows[0] };
         }
-        // Здесь можно добавить обработку для artist_id
       });
 
       const response = await Promise.all(promises);
@@ -117,8 +122,8 @@ class ReviewController {
         const album = await AlbumService.getById(review.rows[0].album_id);
         response.album = album.rows[0];
       } else if (review.rows[0].artist_id) {
-        // const artist = await ArtistService.getById(review.rows[0].artist_id);
-        // response.artist = artist.rows[0]; // Предполагается, что у вас есть ArtistService
+        const artist = await UserService.getById(review.rows[0].artist_id);
+        response.artist = artist.rows[0];
       }
 
       res.status(200).json(response);

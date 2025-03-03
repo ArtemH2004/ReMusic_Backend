@@ -12,8 +12,13 @@ export const ALBUM_QUERY = {
     SELECT a.*, u.username AS artist_name 
     FROM album a
     JOIN users u ON a.artist_id = u.id
-    WHERE a.id = $1
-    ORDER BY a.created_at DESC`,
+    WHERE a.id = $1`,
+  GET_ALL_ALBUMS_BY_ARTIST_ID: `
+    SELECT a.*, u.username AS artist_name
+    FROM album a
+    JOIN users u ON a.artist_id = u.id
+    WHERE a.artist_id = $1
+    ORDER BY a.created_at`,
   UPDATE_RATING_BY_ID: `
     UPDATE album
     SET rating = $1

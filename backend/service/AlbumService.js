@@ -52,6 +52,21 @@ class AlbumService {
     }
   }
 
+  async getAllAlbumsByArtistId(artistId) {
+    if (!artistId) {
+      throw new Error("Artist ID is required.");
+    }
+
+    try {
+      const albums = await db.query(ALBUM_QUERY.GET_ALL_ALBUMS_BY_ARTIST_ID, [
+        artistId,
+      ]);
+      return albums;
+    } catch (error) {
+      throw new Error(`Error getting albums by Artist ID: ${error.message}`);
+    }
+  }
+
   async updateRatingById(rating, id) {
     if (!rating || !id) {
       throw new Error("Rating and Album ID fields are required.");
