@@ -14,5 +14,11 @@ export const SONG_QUERY = {
     JOIN users u ON s.artist_id = u.id
     WHERE s.id = $1
     ORDER BY s.created_at DESC`,
+  GET_ALL_SONGS_BY_ALBUM_ID: `
+    SELECT s.*, u.username AS artist_name 
+    FROM song s
+    JOIN users u ON s.artist_id = u.id
+    WHERE s.album_id = $1
+    ORDER BY s.created_at`,
   DELETE: `DELETE FROM song WHERE id = $1`,
 };

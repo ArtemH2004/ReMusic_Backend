@@ -54,6 +54,19 @@ class SongService {
     }
   }
 
+  async getAllSongsByAlbumId(albumId) {
+    if (!albumId) {
+      throw new Error("Album ID is required.");
+    }
+
+    try {
+      const songs = await db.query(SONG_QUERY.GET_ALL_SONGS_BY_ALBUM_ID, [albumId]);
+      return songs;
+    } catch (error) {
+      throw new Error(`Error getting songs by album ID: ${error.message}`);
+    }
+  }
+
   async delete(id) {
     if (!id) {
       throw new Error("Song ID is required.");
