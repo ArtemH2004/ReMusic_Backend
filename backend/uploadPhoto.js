@@ -7,11 +7,10 @@ class UploadPhoto {
     }
     try {
         const filename = Date.now() + path.extname(file.name);
-        const filePath = path.resolve("uploads", filename);
+        const filePath = path.resolve("uploads/images", filename);
         await file.mv(filePath);
         return filename;
     } catch (error) {
-        console.error(error);
         throw new Error("File upload failed");
     }
 }
