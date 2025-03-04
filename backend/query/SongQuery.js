@@ -1,6 +1,6 @@
 export const SONG_QUERY = {
   CREATE: `
-    INSERT INTO song (name, photo, artist_id, songname, album_id, created_at)
+    INSERT INTO song (name, photo, artist_id, music, album_id, created_at)
     VALUES ($1, $2, $3, $4, $5, DEFAULT)
     RETURNING *`,
   GET_ALL: `

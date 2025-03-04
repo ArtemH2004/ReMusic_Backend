@@ -1,12 +1,13 @@
 import { SONG_QUERY } from "../query/SongQuery.js";
 import uploadPhoto from "../uploadPhoto.js";
+import uploadMusic from "../uploadMusic.js";
 import db from "../db.js";
 
 class SongService {
-  async create(song, photo) {
-    const { name, songname, artist_id, album_id } = song;
+  async create(song, photo, music) {
+    const { name, artist_id, album_id } = song;
 
-    if (!name || !songname) {
+    if (!name) {
       throw new Error("Song name field is required.");
     }
 
@@ -17,12 +18,19 @@ class SongService {
       uploadedPhoto = null;
     }
 
+    let uploadedMusic;
+    if (!!music) {
+      uploadedMusic = await uploadMusic.saveFile(music);
+    } else {
+      uploadedMusic = null;
+    }
+
     try {
       const createdSong = await db.query(SONG_QUERY.CREATE, [
         name,
         uploadedPhoto,
         artist_id,
-        songname,
+        uploadedMusic,
         album_id,
       ]);
 

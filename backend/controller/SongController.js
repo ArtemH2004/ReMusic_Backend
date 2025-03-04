@@ -4,7 +4,7 @@ class SongController {
   //TODO add check that created user is artist
   async create(req, res) {
     try {
-      const newSong = await SongService.create(req.body, req.files.photo);
+      const newSong = await SongService.create(req.body, req.files.photo, req.files.music);
       res.status(201).json(newSong.rows[0]);
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
@@ -48,6 +48,7 @@ class SongController {
       await SongService.delete(id);
       res.status(204).send();
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
