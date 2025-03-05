@@ -18,7 +18,7 @@ export const ALBUM_QUERY = {
     FROM album a
     JOIN users u ON a.artist_id = u.id
     WHERE a.artist_id = $1
-    ORDER BY a.created_at`,
+    ORDER BY a.created_at DESC`,
   UPDATE_RATING_BY_ID: `
     UPDATE album
     SET rating = $1

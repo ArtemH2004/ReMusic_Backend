@@ -25,7 +25,7 @@ export const SONG_QUERY = {
     FROM song s
     JOIN users u ON s.artist_id = u.id
     WHERE s.artist_id = $1
-    ORDER BY s.created_at`,
+    ORDER BY s.created_at DESC`,
   UPDATE_RATING_BY_ID: `
     UPDATE song
     SET rating = $1
