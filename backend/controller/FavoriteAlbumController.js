@@ -3,33 +3,8 @@ import FavoriteAlbumService from "../service/FavoriteAlbumService.js";
 class FavoriteAlbumController {
   async create(req, res) {
     try {
-      const newFavoriteAlbum = await FavoriteAlbumService.create(req.body);
+      const newFavoriteAlbum = await FavoriteAlbumService.create(req.session.userId, req.body.album_id);
       res.status(201).json(newFavoriteAlbum.rows[0]);
-    } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
-
-  async getAll(req, res) {
-    try {
-      const favoritesAlbums = await FavoriteAlbumService.getAll();
-
-      res.status(200).json(favoritesAlbums.rows);
-    } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
-
-  async getById(req, res) {
-    try {
-      const id = req.params.id;
-      const favoriteAlbum = await FavoriteAlbumService.getById(id);
-
-      if (!favoriteAlbum.rows[0]) {
-        return res.status(404).json({ error: "Favorite album not found" });
-      }
-
-      res.status(200).json(favoriteAlbum.rows[0]);
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
@@ -37,9 +12,9 @@ class FavoriteAlbumController {
 
   async getAllAlbumsByUserId(req, res) {
     try {
-      const userId = req.params.userId;
+      const user_id = req.session.userId;
       const favoriteAlbums = await FavoriteAlbumService.getAllAlbumsByUserId(
-        userId
+        user_id
       );
       res.status(200).json(favoriteAlbums.rows);
     } catch (error) {
@@ -47,34 +22,19 @@ class FavoriteAlbumController {
     }
   }
 
-  async getAlbumByIdAndUserById(req, res) {
-    try {
-      const albumId = req.params.albumId;
-      const userId = req.params.userId;
-
-      const favoriteAlbum = await FavoriteAlbumService.getAlbumByIdAndUserById(
-        userId,
-        albumId
-      );
-
-      res.status(200).json(favoriteAlbum.rows[0]);
-    } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
-
   async delete(req, res) {
     try {
-      const id = req.params.id;
-      const favoriteAlbum = await FavoriteAlbumService.getById(id);
+      const album_id = req.params.id;
+      const favoriteAlbum = await FavoriteAlbumService.getById(req.session.userId, album_id);
 
       if (!favoriteAlbum.rows[0]) {
         return res.status(404).json({ error: "Favorite album not found" });
       }
 
-      await FavoriteAlbumService.delete(id);
+      await FavoriteAlbumService.delete(favoriteAlbum.rows[0].id);
       res.status(204).send();
     } catch (error) {
+      console.error(error)
       res.status(500).json({ error: "Internal Server Error" });
     }
   }

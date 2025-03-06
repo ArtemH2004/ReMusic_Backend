@@ -1,7 +1,6 @@
 import SongService from "../service/SongService.js";
 
 class SongController {
-  //TODO add check that created user is artist
   async create(req, res) {
     try {
       const newSong = await SongService.create(req.body, req.files.photo, req.files.music);
@@ -13,7 +12,7 @@ class SongController {
 
   async getAll(req, res) {
     try {
-      const songs = await SongService.getAll();
+      const songs = await SongService.getAll(req.session.userId);
 
       res.status(200).json(songs.rows);
     } catch (error) {
@@ -24,7 +23,7 @@ class SongController {
   async getById(req, res) {
     try {
       const id = req.params.id;
-      const song = await SongService.getById(id);
+      const song = await SongService.getById(req.session.userId, id);
 
       if (!song.rows[0]) {
         return res.status(404).json({ error: "Song not found" });
@@ -48,7 +47,6 @@ class SongController {
       await SongService.delete(id);
       res.status(204).send();
     } catch (error) {
-      console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }

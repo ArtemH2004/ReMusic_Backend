@@ -10,32 +10,37 @@ export const REVIEW_QUERY = {
     RETURNING *
   `,
   GET_ALL: `
-    SELECT r.*, u.username AS user_name, u.photo AS user_photo
+    SELECT r.*, u.username AS user_name, u.photo AS user_photo,
+    EXISTS (SELECT 1 FROM favorite_review f WHERE f.review_id = r.id AND f.user_id = $1) AS liked
     FROM review r 
     JOIN users u ON r.user_id = u.id
     ORDER BY r.created_at DESC`,
   GET_BY_ID: `
-    SELECT r.*, u.username AS user_name , u.photo AS user_photo
+    SELECT r.*, u.username AS user_name , u.photo AS user_photo,
+    EXISTS (SELECT 1 FROM favorite_review f WHERE f.review_id = r.id AND f.user_id = $1) AS liked
     FROM review r
     JOIN users u ON r.user_id = u.id
-    WHERE r.id = $1`,
+    WHERE r.id = $2`,
   GET_ALL_REVIEWS_BY_ARTIST_ID: `
-    SELECT r.*, u.username AS user_name , u.photo AS user_photo
+    SELECT r.*, u.username AS user_name, u.photo AS user_photo,
+    EXISTS (SELECT 1 FROM favorite_review f WHERE f.review_id = r.id AND f.user_id = $1) AS liked
     FROM review r 
     JOIN users u ON r.user_id = u.id
-    WHERE r.artist_id = $1
+    WHERE r.artist_id = $2
     ORDER BY r.created_at DESC`,
   GET_ALL_REVIEWS_BY_ALBUM_ID: `
-    SELECT r.*, u.username AS user_name , u.photo AS user_photo
+    SELECT r.*, u.username AS user_name, u.photo AS user_photo,
+    EXISTS (SELECT 1 FROM favorite_review f WHERE f.review_id = r.id AND f.user_id = $1) AS liked
     FROM review r 
     JOIN users u ON r.user_id = u.id
-    WHERE r.album_id = $1
+    WHERE r.album_id = $2
     ORDER BY r.created_at DESC`,
   GET_ALL_REVIEWS_BY_SONG_ID: `
-    SELECT r.*, u.username AS user_name , u.photo AS user_photo
+    SELECT r.*, u.username AS user_name, u.photo AS user_photo,
+    EXISTS (SELECT 1 FROM favorite_review f WHERE f.review_id = r.id AND f.user_id = $1) AS liked
     FROM review r 
     JOIN users u ON r.user_id = u.id
-    WHERE r.song_id = $1
+    WHERE r.song_id = $2
     ORDER BY r.created_at DESC`,
   DELETE: `DELETE FROM review WHERE id = $1`,
 };

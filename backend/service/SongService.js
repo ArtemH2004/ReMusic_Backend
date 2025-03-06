@@ -40,35 +40,40 @@ class SongService {
     }
   }
 
-  async getAll() {
+  async getAll(userId) {
+    if (!userId) {
+      throw new Error("User ID is required.");
+    }
+
     try {
-      const songs = await db.query(SONG_QUERY.GET_ALL);
+      const songs = await db.query(SONG_QUERY.GET_ALL, [userId]);
       return songs;
     } catch (error) {
       throw new Error(`Error getting songs: ${error.message}`);
     }
   }
 
-  async getById(id) {
-    if (!id) {
-      throw new Error("Song ID is required.");
+  async getById(userId, id) {
+    if (!userId || !id) {
+      throw new Error("User ID and Song ID are required.");
     }
 
     try {
-      const song = await db.query(SONG_QUERY.GET_BY_ID, [id]);
+      const song = await db.query(SONG_QUERY.GET_BY_ID, [userId, id]);
       return song;
     } catch (error) {
       throw new Error(`Error getting song: ${error.message}`);
     }
   }
 
-  async getAllSongsByAlbumId(albumId) {
-    if (!albumId) {
-      throw new Error("Album ID is required.");
+  async getAllSongsByAlbumId(userId, albumId) {
+    if (!userId || !albumId) {
+      throw new Error("User ID and Album ID are required.");
     }
 
     try {
       const songs = await db.query(SONG_QUERY.GET_ALL_SONGS_BY_ALBUM_ID, [
+        userId,
         albumId,
       ]);
       return songs;
@@ -77,13 +82,14 @@ class SongService {
     }
   }
 
-  async getAllSongsByArtistId(artistId) {
-    if (!artistId) {
-      throw new Error("Artist ID is required.");
+  async getAllSongsByArtistId(userId, artistId) {
+    if (!userId || !artistId) {
+      throw new Error("User ID and Artist ID are required.");
     }
 
     try {
       const songs = await db.query(SONG_QUERY.GET_ALL_SONGS_BY_ARTIST_ID, [
+        userId,
         artistId,
       ]);
       return songs;

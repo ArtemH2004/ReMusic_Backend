@@ -6,11 +6,12 @@ import UserService from "../service/UserService.js";
 class ReviewController {
   async create(req, res) {
     try {
+      const userId = req.session.userId;
       const newReview = await ReviewService.create(req.body);
 
       if (!!newReview.rows[0].song_id) {
         const reviews = await ReviewService.getAllReviewsBySongId(
-          newReview.rows[0].song_id
+          userId, newReview.rows[0].song_id
         );
 
         let totalRating = 0;
@@ -25,7 +26,7 @@ class ReviewController {
         );
       } else if (!!newReview.rows[0].album_id) {
         const reviews = await ReviewService.getAllReviewsByAlbumId(
-          newReview.rows[0].album_id
+          userId, newReview.rows[0].album_id
         );
 
         let totalRating = 0;
@@ -40,7 +41,7 @@ class ReviewController {
         );
       } else if (!!newReview.rows[0].artist_id) {
         const reviews = await ReviewService.getAllReviewsByArtistId(
-          newReview.rows[0].artist_id
+          userId, newReview.rows[0].artist_id
         );
 
         let totalRating = 0;
@@ -55,8 +56,9 @@ class ReviewController {
         );
       }
 
-      res.status(201).json(newReview);
+      res.status(201).json(newReview.rows[0]);
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
@@ -79,17 +81,18 @@ class ReviewController {
 
   async getAll(req, res) {
     try {
-      const reviews = await ReviewService.getAll();
+      const userId = req.session.userId;
+      const reviews = await ReviewService.getAll(userId);
 
       const promises = reviews.rows.map(async (review) => {
         if (review.song_id) {
-          const song = await SongService.getById(review.song_id);
+          const song = await SongService.getById(userId, review.song_id);
           return { review, song: song.rows[0] };
         } else if (review.album_id) {
-          const album = await AlbumService.getById(review.album_id);
+          const album = await AlbumService.getById(userId, review.album_id);
           return { review, album: album.rows[0] };
         } else if (review.artist_id) {
-          const artist = await UserService.getById(review.artist_id);
+          const artist = await UserService.getById(userId, review.artist_id);
           return { review, artist: artist.rows[0] };
         }
       });
@@ -104,8 +107,9 @@ class ReviewController {
 
   async getById(req, res) {
     try {
+      const userId = req.session.userId;
       const id = req.params.id;
-      const review = await ReviewService.getById(id);
+      const review = await ReviewService.getById(userId, id);
 
       if (!review.rows[0]) {
         return res.status(404).json({ error: "Review not found" });
@@ -116,13 +120,19 @@ class ReviewController {
       };
 
       if (review.rows[0].song_id) {
-        const song = await SongService.getById(review.rows[0].song_id);
+        const song = await SongService.getById(userId, review.rows[0].song_id);
         response.song = song.rows[0];
       } else if (review.rows[0].album_id) {
-        const album = await AlbumService.getById(review.rows[0].album_id);
+        const album = await AlbumService.getById(
+          userId,
+          review.rows[0].album_id
+        );
         response.album = album.rows[0];
       } else if (review.rows[0].artist_id) {
-        const artist = await UserService.getById(review.rows[0].artist_id);
+        const artist = await UserService.getById(
+          userId,
+          review.rows[0].artist_id
+        );
         response.artist = artist.rows[0];
       }
 
@@ -134,8 +144,12 @@ class ReviewController {
 
   async getAllByArtistId(req, res) {
     try {
+      const userId = req.session.userId;
       const artist_id = req.params.id;
-      const reviews = await ReviewService.getAllReviewsByArtistId(artist_id);
+      const reviews = await ReviewService.getAllReviewsByArtistId(
+        userId,
+        artist_id
+      );
 
       if (!reviews.rows[0]) {
         return res
@@ -151,8 +165,12 @@ class ReviewController {
 
   async getAllByAlbumId(req, res) {
     try {
+      const userId = req.session.userId;
       const album_id = req.params.id;
-      const reviews = await ReviewService.getAllReviewsByAlbumId(album_id);
+      const reviews = await ReviewService.getAllReviewsByAlbumId(
+        userId,
+        album_id
+      );
 
       if (!reviews.rows[0]) {
         return res
@@ -168,8 +186,12 @@ class ReviewController {
 
   async getAllBySongId(req, res) {
     try {
+      const userId = req.session.userId;
       const song_id = req.params.id;
-      const reviews = await ReviewService.getAllReviewsBySongId(song_id);
+      const reviews = await ReviewService.getAllReviewsBySongId(
+        userId,
+        song_id
+      );
 
       if (!reviews.rows[0]) {
         return res

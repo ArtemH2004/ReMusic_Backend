@@ -3,33 +3,8 @@ import FavoriteSongService from "../service/FavoriteSongService.js";
 class FavoriteSongController {
   async create(req, res) {
     try {
-      const newFavoriteSong = await FavoriteSongService.create(req.body);
+      const newFavoriteSong = await FavoriteSongService.create(req.session.userId, req.body.song_id);
       res.status(201).json(newFavoriteSong.rows[0]);
-    } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
-
-  async getAll(req, res) {
-    try {
-      const favoritesSongs = await FavoriteSongService.getAll();
-
-      res.status(200).json(favoritesSongs.rows);
-    } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
-
-  async getById(req, res) {
-    try {
-      const id = req.params.id;
-      const favoriteSong = await FavoriteSongService.getById(id);
-
-      if (!favoriteSong.rows[0]) {
-        return res.status(404).json({ error: "Favorite song not found" });
-      }
-
-      res.status(200).json(favoriteSong.rows[0]);
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
@@ -37,9 +12,8 @@ class FavoriteSongController {
 
   async getAllSongsByUserId(req, res) {
     try {
-      const userId = req.params.userId;
       const favoriteSongs = await FavoriteSongService.getAllSongsByUserId(
-        userId
+        req.session.userId
       );
       res.status(200).json(favoriteSongs.rows);
     } catch (error) {
@@ -47,32 +21,16 @@ class FavoriteSongController {
     }
   }
 
-  async getSongByIdAndUserById(req, res) {
-    try {
-      const songId = req.params.songId;
-      const userId = req.params.userId;
-
-      const favoriteSong = await FavoriteSongService.getSongByIdAndUserById(
-        userId,
-        songId
-      );
-
-      res.status(200).json(favoriteSong.rows[0]);
-    } catch (error) {
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  }
-
   async delete(req, res) {
     try {
-      const id = req.params.id;
-      const favoriteSong = await FavoriteSongService.getById(id);
+      const song_id = req.params.id;
+      const favoriteSong = await FavoriteSongService.getById(req.session.userId, song_id);
 
       if (!favoriteSong.rows[0]) {
         return res.status(404).json({ error: "Favorite song not found" });
       }
 
-      await FavoriteSongService.delete(id);
+      await FavoriteSongService.delete(favoriteSong.rows[0].id);
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });

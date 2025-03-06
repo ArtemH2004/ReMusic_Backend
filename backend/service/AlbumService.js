@@ -30,35 +30,40 @@ class AlbumService {
     }
   }
 
-  async getAll() {
+  async getAll(userId) {
+    if (!userId) {
+      throw new Error("User ID is required.");
+    }
+
     try {
-      const albums = await db.query(ALBUM_QUERY.GET_ALL);
+      const albums = await db.query(ALBUM_QUERY.GET_ALL, [userId]);
       return albums;
     } catch (error) {
       throw new Error(`Error getting albums: ${error.message}`);
     }
   }
 
-  async getById(id) {
-    if (!id) {
-      throw new Error("Album ID is required.");
+  async getById(userId, id) {
+    if (!userId || !id) {
+      throw new Error("User ID and Album ID are required.");
     }
 
     try {
-      const album = await db.query(ALBUM_QUERY.GET_BY_ID, [id]);
+      const album = await db.query(ALBUM_QUERY.GET_BY_ID, [userId, id]);
       return album;
     } catch (error) {
       throw new Error(`Error getting album: ${error.message}`);
     }
   }
 
-  async getAllAlbumsByArtistId(artistId) {
-    if (!artistId) {
-      throw new Error("Artist ID is required.");
+  async getAllAlbumsByArtistId(userId, artistId) {
+    if (!userId || !artistId) {
+      throw new Error("User ID and Artist ID are required.");
     }
 
     try {
       const albums = await db.query(ALBUM_QUERY.GET_ALL_ALBUMS_BY_ARTIST_ID, [
+        userId,
         artistId,
       ]);
       return albums;

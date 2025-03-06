@@ -74,37 +74,41 @@ class ReviewService {
     }
   }
 
-  async getAll() {
+  async getAll(userId) {
+    if (!userId) {
+      throw new Error("User ID is required.");
+    }
+
     try {
-      const reviews = await db.query(REVIEW_QUERY.GET_ALL);
+      const reviews = await db.query(REVIEW_QUERY.GET_ALL, [userId]);
       return reviews;
     } catch (error) {
       throw new Error(`Error getting reviews: ${error.message}`);
     }
   }
 
-  async getById(id) {
-    if (!id) {
-      throw new Error("Review ID is required.");
+  async getById(userId, id) {
+    if (!userId || !id) {
+      throw new Error("User ID and Review ID are required.");
     }
 
     try {
-      const review = await db.query(REVIEW_QUERY.GET_BY_ID, [id]);
+      const review = await db.query(REVIEW_QUERY.GET_BY_ID, [userId, id]);
       return review;
     } catch (error) {
       throw new Error(`Error getting review: ${error.message}`);
     }
   }
 
-  async getAllReviewsByArtistId(artistId) {
-    if (!artistId) {
-      throw new Error("Artist ID is required.");
+  async getAllReviewsByArtistId(userId, artistId) {
+    if (!userId || !artistId) {
+      throw new Error("User ID and Artist ID are required.");
     }
 
     try {
       const reviews = await db.query(
         REVIEW_QUERY.GET_ALL_REVIEWS_BY_ARTIST_ID,
-        [artistId]
+        [userId, artistId]
       );
       return reviews;
     } catch (error) {
@@ -112,13 +116,14 @@ class ReviewService {
     }
   }
 
-  async getAllReviewsByAlbumId(albumId) {
-    if (!albumId) {
-      throw new Error("Album ID is required.");
+  async getAllReviewsByAlbumId(userId, albumId) {
+    if (!userId || !albumId) {
+      throw new Error("User ID and Album ID are required.");
     }
 
     try {
       const reviews = await db.query(REVIEW_QUERY.GET_ALL_REVIEWS_BY_ALBUM_ID, [
+        userId,
         albumId,
       ]);
       return reviews;
@@ -127,13 +132,14 @@ class ReviewService {
     }
   }
 
-  async getAllReviewsBySongId(songId) {
-    if (!songId) {
-      throw new Error("Song ID is required.");
+  async getAllReviewsBySongId(userId, songId) {
+    if (!userId || !songId) {
+      throw new Error("User ID and Song ID are required.");
     }
 
     try {
       const reviews = await db.query(REVIEW_QUERY.GET_ALL_REVIEWS_BY_SONG_ID, [
+        userId,
         songId,
       ]);
       return reviews;

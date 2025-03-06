@@ -1,6 +1,7 @@
 # Папка node_modules
 node_modules/
-uploads/
+uploads/images/*
+uploads/music/*
 
 # Логи
 npm-debug.log*
