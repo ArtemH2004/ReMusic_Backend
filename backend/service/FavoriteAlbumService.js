@@ -2,9 +2,7 @@ import { FAVORITE_ALBUM_QUERY } from "../query/FavoriteAlbumQuery.js";
 import db from "../db.js";
 
 class FavoriteAlbumService {
-  async create(ids) {
-    const { user_id, album_id } = ids;
-
+  async create(user_id, album_id) {
     if (!user_id || !album_id) {
       throw new Error("User ID and Album ID are required");
     }
@@ -20,67 +18,43 @@ class FavoriteAlbumService {
     }
   }
 
-  async getAll() {
-    try {
-      const result = await db.query(FAVORITE_ALBUM_QUERY.GET_ALL);
-      return result;
-    } catch (error) {
-      throw new Error(`Error getting favorites albums: ${error.message}`);
-    }
-  }
-
-  async getById(id) {
-    if (!id) {
-      throw new Error("Id is required");
+  async getById(user_id, album_id) {
+    if (!user_id || !album_id) {
+      throw new Error("User ID and Album ID are required");
     }
 
     try {
-      const result = await db.query(FAVORITE_ALBUM_QUERY.GET_BY_ID, [id]);
+      const result = await db.query(FAVORITE_ALBUM_QUERY.GET_BY_ID, [
+        user_id,
+        album_id,
+      ]);
       return result;
     } catch (error) {
       throw new Error(`Error getting favorite album by ID: ${error.message}`);
     }
   }
 
-  async getAllAlbumsByUserId(userId) {
-    if (!userId) {
+  async getAllAlbumsByUserId(user_id) {
+    if (!user_id) {
       throw new Error("User ID is required");
     }
 
     try {
       const result = await db.query(
         FAVORITE_ALBUM_QUERY.GET_ALL_ALBUMS_BY_USER_ID,
-        [userId]
+        [user_id]
       );
       return result;
     } catch (error) {
       throw new Error(
-        `Error getting favorite albums by user ID: ${error.message}`
-      );
-    }
-  }
-
-  async getAlbumByIdAndUserById(user_id, album_id) {
-    if (!user_id || !album_id) {
-      throw new Error("User ID and Album ID are required");
-    }
-
-    try {
-      const result = await db.query(
-        FAVORITE_ALBUM_QUERY.GET_ALBUM_BY_ID_AND_USER_ID,
-        [user_id, album_id]
-      );
-      return result;
-    } catch (error) {
-      throw new Error(
-        `Error getting favorite Album by ID and User by ID: ${error.message}`
+        `Error getting favorite albums by User ID: ${error.message}`
       );
     }
   }
 
   async delete(id) {
     if (!id) {
-      throw new Error("Id is required");
+      throw new Error("Favorite Album ID is required");
     }
 
     try {

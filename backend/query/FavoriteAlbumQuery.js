@@ -4,16 +4,17 @@ export const FAVORITE_ALBUM_QUERY = {
     VALUES ($1, $2, DEFAULT)
     RETURNING *
     `,
-  GET_ALL: `SELECT * FROM favorite_album ORDER BY created_at DESC`,
   GET_BY_ID: `
-    SELECT * FROM favorite_album WHERE id = $1`,
-  GET_ALL_ALBUMS_BY_USER_ID: `
-    SELECT a.* FROM favorite_album fs
-    JOIN album a ON fs.album_id = a.id
-    WHERE fs.user_id = $1
-    ORDER BY fs.created_at DESC`,
-  GET_ALBUM_BY_ID_AND_USER_ID: `
-    SELECT id FROM favorite_album
+    SELECT id 
+    FROM favorite_album 
     WHERE user_id = $1 AND album_id = $2`,
+  GET_ALL_ALBUMS_BY_USER_ID: `
+    SELECT a.*, u.username AS artist_name,
+    EXISTS (SELECT 1 FROM favorite_album f WHERE f.album_id = a.id AND f.user_id = $1) AS liked
+    FROM favorite_album fa
+    JOIN album a ON fa.album_id = a.id
+    JOIN users u ON a.artist_id = u.id
+    WHERE fa.user_id = $1
+    ORDER BY fa.created_at DESC`,
   DELETE: `DELETE FROM favorite_album WHERE id = $1`,
 };

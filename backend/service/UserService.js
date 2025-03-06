@@ -3,22 +3,26 @@ import uploadPhoto from "../uploadPhoto.js";
 import db from "../db.js";
 
 class UserService {
-  async getAll() {
+  async getAll(userId) {
+    if (!userId) {
+      throw new Error("User ID is required.");
+    }
+
     try {
-      const users = await db.query(USER_QUERY.GET_ALL);
+      const users = await db.query(USER_QUERY.GET_ALL, [userId]);
       return users;
     } catch (error) {
       throw new Error(`Error getting users: ${error.message}`);
     }
   }
 
-  async getById(id) {
-    if (!id) {
-      throw new Error("User ID is required.");
+  async getById(userId, id) {
+    if (!userId || !id) {
+      throw new Error("User ID and Artist ID are required.");
     }
 
     try {
-      const user = await db.query(USER_QUERY.GET_BY_ID, [id]);
+      const user = await db.query(USER_QUERY.GET_BY_ID, [userId, id]);
       return user;
     } catch (error) {
       throw new Error(`Error getting user: ${error.message}`);

@@ -13,24 +13,26 @@ class AlbumController {
 
   async getAll(req, res) {
     try {
-      const albums = await AlbumService.getAll();
+      const albums = await AlbumService.getAll(req.session.userId);
 
       res.status(200).json(albums.rows);
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
 
   async getById(req, res) {
     try {
+      const userId = req.session.userId;
       const id = req.params.id;
-      const album = await AlbumService.getById(id);
+      const album = await AlbumService.getById(userId, id);
 
       if (!album.rows[0]) {
         return res.status(404).json({ error: "Album not found" });
       }
 
-      const songs = await SongService.getAllSongsByAlbumId(id);
+      const songs = await SongService.getAllSongsByAlbumId(userId, id);
 
       const response = {
         album: album.rows[0],
