@@ -38,7 +38,7 @@ class SongController {
   async delete(req, res) {
     try {
       const id = req.params.id;
-      const song = await SongService.getById(id);
+      const song = await SongService.getById(req.session.userId, id);
 
       if (!song.rows[0]) {
         return res.status(404).json({ error: "Song not found" });

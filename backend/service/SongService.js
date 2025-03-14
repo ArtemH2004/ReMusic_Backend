@@ -99,7 +99,7 @@ class SongService {
   }
 
   async updateRatingById(rating, id) {
-    if (!rating || !id) {
+    if (rating < 0 || !id) {
       throw new Error("Rating and Song ID fields are required.");
     }
 

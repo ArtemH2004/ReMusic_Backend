@@ -1,19 +1,12 @@
-import * as path from "path";
-
 class UploadPhoto {
-  async saveFile(file) {
-    if (!file || !file.name || !file.data) {
+    async saveFile(file) {
+      if (!file) {
         throw new Error("Invalid file data");
+      }
+      return file.filename; // Возвращаем имя сохраненного файла
     }
-    try {
-        const filename = Date.now() + path.extname(file.name);
-        const filePath = path.resolve("uploads/images", filename);
-        await file.mv(filePath);
-        return filename;
-    } catch (error) {
-        throw new Error("File upload failed");
-    }
-}
-}
+  }
+  
+  
 
 export default new UploadPhoto();

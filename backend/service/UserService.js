@@ -1,5 +1,4 @@
 import { USER_QUERY } from "../query/UserQuery.js";
-import uploadPhoto from "../uploadPhoto.js";
 import db from "../db.js";
 
 class UserService {
@@ -25,27 +24,18 @@ class UserService {
       const user = await db.query(USER_QUERY.GET_BY_ID, [userId, id]);
       return user;
     } catch (error) {
+
       throw new Error(`Error getting user: ${error.message}`);
     }
   }
 
-  async updatePhoto(photo, id) {
-    if (!id) {
-      throw new Error("User ID field is required.");
-    }
-
-    let uploadedPhoto;
-    if (!!photo) {
-      uploadedPhoto = await uploadPhoto.saveFile(photo);
-    } else {
-      uploadedPhoto = null;
+  async updatePhoto(filename, id) {
+    if (!id || !filename) {
+      throw new Error("User ID and filename are required.");
     }
 
     try {
-      const updatedUser = await db.query(USER_QUERY.UPDATE_PHOTO, [
-        uploadedPhoto,
-        id,
-      ]);
+      const updatedUser = await db.query(USER_QUERY.UPDATE_PHOTO, [filename, id]);
       return updatedUser;
     } catch (error) {
       throw new Error(`Error updating user photo: ${error.message}`);
