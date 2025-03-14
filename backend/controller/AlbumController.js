@@ -48,7 +48,7 @@ class AlbumController {
   async delete(req, res) {
     try {
       const id = req.params.id;
-      const album = await AlbumService.getById(id);
+      const album = await AlbumService.getById(req.session.userId, id);
 
       if (!album.rows[0]) {
         return res.status(404).json({ error: "Album not found" });

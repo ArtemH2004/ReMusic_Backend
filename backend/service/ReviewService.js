@@ -87,6 +87,19 @@ class ReviewService {
     }
   }
 
+  async getAllByUserId(userId, id) {
+    if (!userId || !id) {
+      throw new Error("User ID is required.");
+    }
+
+    try {
+      const reviews = await db.query(REVIEW_QUERY.GET_ALL_BY_USER_ID, [userId, id]);
+      return reviews;
+    } catch (error) {
+      throw new Error(`Error getting reviews: ${error.message}`);
+    }
+  }
+
   async getById(userId, id) {
     if (!userId || !id) {
       throw new Error("User ID and Review ID are required.");
@@ -97,6 +110,22 @@ class ReviewService {
       return review;
     } catch (error) {
       throw new Error(`Error getting review: ${error.message}`);
+    }
+  }
+
+  async getReviewSongCountById(id) {
+    if (!id) {
+      throw new Error("Review ID is required.");
+    }
+
+    try {
+      const songCount = await db.query(
+        REVIEW_QUERY.GET_REVIEWS_COUNT_BY_SONG_ID,
+        [id]
+      );
+      return songCount;
+    } catch (error) {
+      throw new Error(`Error getting song count for review ID: ${error.message}`);
     }
   }
 

@@ -33,7 +33,6 @@ class UserController {
 
       res.status(200).json(response);
     } catch (error) {
-      console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
@@ -41,16 +40,14 @@ class UserController {
   async updatePhoto(req, res) {
     try {
       const id = req.params.id;
-      const photo = req.files.photo;
-      const user = await UserService.getById(id);
+      const file = req.file; 
 
-      if (!user.rows[0]) {
-        return res.status(404).json({ error: "User not found" });
+      if (!file) {
+        return res.status(400).json({ error: "No file uploaded" });
       }
 
-      const updateUserPhoto = await UserService.updatePhoto(photo, id)
-
-      res.status(201).json(updateUserPhoto.rows[0]);
+      const updateUserPhoto = await UserService.updatePhoto(file.filename, id);
+      res.status(200).json(updateUserPhoto.rows[0]);
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }

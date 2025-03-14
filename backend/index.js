@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-// import fs from 'fs';
-import fileUpload from "express-fileupload";
+import path from "path";
+import { fileURLToPath } from "url";
 import session from "express-session";
 import userRouter from "./routes/UserRoutes.js";
 import songRouter from "./routes/SongRoutes.js";
@@ -15,6 +15,9 @@ import favoriteReviewRouter from "./routes/FavoriteReviewRoutes.js";
 
 const PORT = 8081;
 const app = express();
+
+const __filename = fileURLToPath(import.meta.url); 
+const __dirname = path.dirname(__filename);
 
 // const sslOptions = {
 //     key: fs.readFileSync('server.key'),
@@ -31,7 +34,7 @@ app.use(
 
 app.use(express.json());
 app.use(express.static("uploads"));
-app.use(fileUpload());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(
   session({
@@ -39,8 +42,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, 
-      maxAge: 1000 * 60 * 60 * 24, 
+      secure: false,
+      maxAge: 1000 * 60 * 60 * 24,
     },
   })
 );
@@ -59,7 +62,7 @@ async function startApp() {
   try {
     app.listen(PORT, () => console.log("SERVER STARTED ON PORT " + PORT));
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
