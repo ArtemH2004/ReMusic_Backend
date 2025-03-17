@@ -65,15 +65,65 @@ class ReviewController {
   async update(req, res) {
     try {
       const id = req.params.id;
-      const review = await ReviewService.getById(id);
+      const userId = req.session.userId;
+      const review = await ReviewService.getById(userId, id);
 
       if (!review.rows[0]) {
         return res.status(404).json({ error: "Review not found" });
       }
 
       const updateReview = await ReviewService.update(req.body, id);
+
+      if (!!updateReview.rows[0].song_id) {
+        const reviews = await ReviewService.getAllReviewsBySongId(
+          userId, updateReview.rows[0].song_id
+        );
+
+        let totalRating = 0;
+        for (let i = 0; i < reviews.rows.length; i++) {
+          totalRating = totalRating + reviews.rows[i].rating;
+        }
+
+        const newRating = Math.round(totalRating / reviews.rows.length);
+        await SongService.updateRatingById(
+          newRating,
+          updateReview.rows[0].song_id
+        );
+      } else if (!!updateReview.rows[0].album_id) {
+        const reviews = await ReviewService.getAllReviewsByAlbumId(
+          userId, updateReview.rows[0].album_id
+        );
+
+        let totalRating = 0;
+        for (let i = 0; i < reviews.rows.length; i++) {
+          totalRating = totalRating + reviews.rows[i].rating;
+        }
+
+        const newRating = Math.round(totalRating / reviews.rows.length);
+        await AlbumService.updateRatingById(
+          newRating,
+          updateReview.rows[0].album_id
+        );
+      } else if (!!updateReview.rows[0].artist_id) {
+        const reviews = await ReviewService.getAllReviewsByArtistId(
+          userId, updateReview.rows[0].artist_id
+        );
+
+        let totalRating = 0;
+        for (let i = 0; i < reviews.rows.length; i++) {
+          totalRating = totalRating + reviews.rows[i].rating;
+        }
+
+        const newRating = Math.round(totalRating / reviews.rows.length);
+        await UserService.updateRatingById(
+          newRating,
+          updateReview.rows[0].artist_id
+        );
+      }
+
       res.status(201).json(updateReview.rows[0]);
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
